@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://unpkg.com/minter-js-sdk"></script>
+</head>
+<body>
+
+<button id="signSellButton">SELL</button>
+<button id="signBuyButton">BUY</button>
+
+<script>
+  let trustConnectSignRequest = async (data) => {
+    return new Promise((resolve, reject) => {
+      document.addEventListener('trustConnect:sign:accept', function(e) {
+        return resolve(e.detail.tx);
+      });
+
+      document.addEventListener('trustConnect:sign:reject', function(e) {
+        return reject('Rejected by user');
+      });
+
+      let event = new CustomEvent(
+          'trustConnect:sign', {detail: {data}},
+      );
+
+      document.dispatchEvent(event);
+    });
+  };
+
+  async function sell() {
+    const txParams = {
+      type: minterSDK.TX_TYPE.SELL_SWAP_POOL,
+      data: {
+        coins: [0, 2977],
+        valueToSell: 1,
+        minimumValueToBuy: 2,
+      },
+      gasCoin: 0,
+    };
+
+    try {
+      const tx = await trustConnectSignRequest(minterSDK.prepareLink(txParams));
+
+      console.log({tx});
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function buy() {
+    const txParams = {
+      type: minterSDK.TX_TYPE.BUY_SWAP_POOL,
+      data: {
+        coins: [0, 2977],
+        valueToBuy: 1,
+        maximumValueToSell: 2,
+      },
+      gasCoin: 0,
+    };
+
+    try {
+      const tx = await trustConnectSignRequest(minterSDK.prepareLink(txParams));
+
+      console.log({tx});
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  const signSellButton = document.getElementById('signSellButton');
+  signSellButton.addEventListener('click', async function(e) {
+    await sell();
+  }, false);
+
+  const signBuyButton = document.getElementById('signBuyButton');
+  signBuyButton.addEventListener('click', async function(e) {
+    await buy();
+  }, false);
+
+</script>
+
+<style>
+    button {
+        font-size: 32px;
+        padding: 6px;
+    }
+</style>
+</body>
+</html>

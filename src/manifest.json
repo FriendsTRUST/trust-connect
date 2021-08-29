@@ -1,0 +1,43 @@
+{
+  "manifest_version": 2,
+  "name": "TRUST Connect",
+  "version": "0.1.0",
+  "homepage_url": "https://github.com/FriendsTRUST/minter-connect",
+  "description": "An extension which allows websites to ask for performing transactions on a behalf of Minter wallet in a secure way",
+  "default_locale": "en",
+  "permissions": [],
+  "externally_connectable": {
+    "matches": [
+      "http://*/*",
+      "https://*/*"
+    ]
+  },
+  "icons": {
+    "128": "icons/128.png"
+  },
+  "background": {
+    "scripts": [
+      "js/background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "js/content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "__MSG_extName__",
+    "default_icon": {
+      "128": "icons/128.png"
+    }
+  }
+}
